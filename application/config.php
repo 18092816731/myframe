@@ -236,4 +236,14 @@ return [
         'var_page'  => 'page',
         'list_rows' => 15,
     ],
+
+    'mail'   =>[
+        'mail_host'        =>'smtp.sina.com',//smpt 服务器
+        'mail_host_port'   =>25, //服务器端口
+        'mail_user_mail'   =>'qq3040701459@sina.com', //smpt服务器 用户邮箱
+        'mail_user_account'=>'qq3040701459@sina.com', //smpt服务器 用户账号
+        'mail_user_password'=>'peng2qia',             //smpt服务器 用户密码
+        'mail_type'         =>'HTML',//邮件格式（HTML/TXT）,TXT为文本邮件
+     
+    ],
 ];
