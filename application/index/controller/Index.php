@@ -35,4 +35,19 @@ class Index
       }
 
     }
+    /**
+     * 文件控制测试
+     */
+    public function fileC(Request $request = null){
+    $file = new \fileC\fileC();dump($file);
+        if($request->isPost())
+        {
+           
+           
+            $file->createDir($data['fileName']);
+            echo 'ok';
+        }else{
+            echo '<form action="" method="post"><input type="text" name="fileName"/><br/><input type="submit" value="提交" /></form>';
+        }
+    }
 }

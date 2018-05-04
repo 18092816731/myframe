@@ -13,3 +13,260 @@
 </form>
 </body>
 </html>
+<!-- html代码 -->
+<!-- 
+           
+                            <select class="province" name="province_id" id="province_id" onchange="provinceInfo('#province_id','#city_id','#area_id')" style="width: 25%;display: inline-block;">
+                                {volist name="province" id="vo"}
+                                <option value="{$vo->id}" title="{$vo->name}">{$vo->name}</option>
+                                {/volist}
+                            </select>
+                            <select class="city" name="city_id" id="city_id" onchange="cityInfo('#city_id','#area_id')" style="width: 25%;display: inline-block;">
+                                {volist name="city" id="vo"}
+                                <option value="{$vo->id}" title="{$vo->name}">{$vo->name}</option>
+                                {/volist}
+                            </select>
+                            <select class="area" name="area_id" id="area_id" style="width: 25%;display: inline-block;">
+                                {volist name="area" id="vo"}
+                                <option value="{$vo->id}" title="{$vo->name}">{$vo->name}</option>
+                                {/volist}
+                            </select>
+
+ -->
+<!-- php代码 -->
+<!-- 
+    /**
+     * 获取省市区
+     * @param Request $request
+     * @return array
+     */
+    public function region(Request $request)
+    {
+        $provinceId = empty($request->param('provinceId')) ? null : $request->param('provinceId');
+        $cityId = empty($request->param('cityId')) ? null : $request->param('cityId');
+        $commonModel = new \app\system\model\Common();
+        $region = $commonModel->region($provinceId,$cityId);
+        $region = json_decode($region);
+        return [
+            'province'=>$region->province,
+            'city'=>$region->city,
+            'area'=>$region->area,
+        ];
+    }
+ -->
+<!-- 省市县三级联动  -->
+<script>
+/*
+* 公共方法
+*/
+const SYSTEMURL = "/index.php/";
+// //省市区数据
+// function provinceInfo(oop) {
+//     provinceId = $("#province").find("option:selected").val();
+//     data = {"provinceId":provinceId};
+//     $.ajax({
+//         type: "get",
+//         url: SYSTEMURL+"User/region",
+//         data: data,
+//         dataType: "json",
+//         success: function(msg){
+//             var city = "";
+//             var area = "";
+//             if(msg.city.length > 0){
+//                 for(var i=0;i<msg.city.length;i++){
+//                     city+= '<option value="'+msg.city[i].id+'" title="'+msg.city[i].name+'">'+msg.city[i].name+'</option>';
+//                 }
+//                 $("#city *").remove();
+//                 $("#city").append(city);
+//             }
+//             if(msg.area.length > 0){
+//                 for(var i=0;i<msg.area.length;i++){
+//                     area+= '<option value="'+msg.area[i].id+'" title="'+msg.area[i].name+'">'+msg.area[i].name+'</option>';
+//                 }
+//                 $("#area *").remove();
+//                 $("#area").append(area);
+//             }
+//         }
+//     });
+// }
+// //省市区数据
+// function cityInfo(oop) {
+//     cityId = $("#city").find("option:selected").val();
+//     data = {"cityId":cityId};
+//     $.ajax({
+//         type: "get",
+//         url: SYSTEMURL+"User/region",
+//         data: data,
+//         dataType: "json",
+//         success: function(msg){
+//             var area = "";
+//             if(msg.area.length > 0){
+//                 for(var i=0;i<msg.area.length;i++){
+//                     area+= '<option value="'+msg.area[i].id+'" title="'+msg.area[i].name+'">'+msg.area[i].name+'</option>';
+//                 }
+//                 $("#area *").remove();
+//                 $("#area").append(area);
+//             }
+//         }
+//     });
+// }
+
+
+//省市区数据
+function provinceInfo(province ,cityId,areaId) {
+    provinceId = $(province).find("option:selected").val();
+    data = {"provinceId":provinceId};
+    $.ajax({
+        type: "get",
+        url: SYSTEMURL+"System/Utils/region",
+        data: data,
+        dataType: "json",
+        success: function(msg){
+            var city = "";
+            var area = "";
+            if(msg.city.length > 0){
+                for(var i=0;i<msg.city.length;i++){
+                    city+= '<option value="'+msg.city[i].id+'" title="'+msg.city[i].name+'">'+msg.city[i].name+'</option>';
+                }
+                var removeCity = cityId+" *";
+                $(removeCity).remove();
+                $(cityId).append(city);
+            }
+            if(msg.area.length > 0){
+                for(var i=0;i<msg.area.length;i++){
+                    area+= '<option value="'+msg.area[i].id+'" title="'+msg.area[i].name+'">'+msg.area[i].name+'</option>';
+                }
+                var removeArea = areaId+" *";
+                $(removeArea).remove();
+                $(areaId).append(area);
+            }
+        }
+    });
+}
+//省市区数据
+function cityInfo(city,areaId) {
+    cityId = $(city).find("option:selected").val();
+    data = {"cityId":cityId};
+    $.ajax({
+        type: "get",
+        url: SYSTEMURL+"System/Utils/region",
+        data: data,
+        dataType: "json",
+        success: function(msg){
+            var area = "";
+            if(msg.area.length > 0){
+                for(var i=0;i<msg.area.length;i++){
+                    area+= '<option value="'+msg.area[i].id+'" title="'+msg.area[i].name+'">'+msg.area[i].name+'</option>';
+                }
+                var removeArea = areaId+" *";
+                $(removeArea).remove();
+                $(areaId).append(area);
+            }
+        }
+    });
+}
+
+//省市区数据
+function provinceInfos(oop) {
+    provinceId = $(".provinces").find("option:selected").val();
+    data = {"provinceId":provinceId};
+    $.ajax({
+        type: "get",
+        url: SYSTEMURL+"System/Utils/region",
+        data: data,
+        dataType: "json",
+        success: function(msg){
+            var city = "";
+            var area = "";
+            if(msg.city.length > 0){
+                city+= '<option value="" title="全部">全部</option>';
+                for(var i=0;i<msg.city.length;i++){
+                    city+= '<option value="'+msg.city[i].id+'" title="'+msg.city[i].name+'">'+msg.city[i].name+'</option>';
+                }
+                $(".citys *").remove();
+                $(".citys").append(city);
+            }
+            if(msg.area.length > 0){
+                area+= '<option value="" title="全部">全部</option>';
+                for(var i=0;i<msg.area.length;i++){
+                    area+= '<option value="'+msg.area[i].id+'" title="'+msg.area[i].name+'">'+msg.area[i].name+'</option>';
+                }
+                $(".areas *").remove();
+                $(".areas").append(area);
+            }
+        }
+    });
+}
+//省市区数据
+function cityInfos(oop) {
+    cityId = $(".citys").find("option:selected").val();
+    data = {"cityId":cityId};
+    $.ajax({
+        type: "get",
+        url: SYSTEMURL+"System/Utils/region",
+        data: data,
+        dataType: "json",
+        success: function(msg){
+            var area = "";
+            if(msg.area.length > 0){
+                area+= '<option value="" title="全部">全部</option>';
+                for(var i=0;i<msg.area.length;i++){
+                    area+= '<option value="'+msg.area[i].id+'" title="'+msg.area[i].name+'">'+msg.area[i].name+'</option>';
+                }
+                $(".areas *").remove();
+                $(".areas").append(area);
+            }
+        }
+    });
+}
+
+
+
+//只能输入中文
+function chineseAllow(oop){
+    $(oop).attr("onkeyup","this.value=this.value.replace(/[^\u4e00-\u9fa5]/g,'');");
+    $(oop).attr("onbeforepaste","this.value=this.value.replace(/[^\u4e00-\u9fa5]/g,'')");
+}
+//只能输入数字
+function numberAllow(oop){
+    $(oop).attr("onkeyup","this.value=this.value.replace(/[^0-9]/g,'');");
+    $(oop).attr("onbeforepaste","this.value=this.value.replace(/[^0-9]/g,'')");
+}
+//只能输入英文
+function englishAllow(oop){
+    $(oop).attr("onkeyup","this.value=this.value.replace(/[^\\a-\\z\\A-\\Z]/g,'');");
+    $(oop).attr("onbeforepaste","this.value=this.value.replace(/[^\\a-\\z\\A-\\Z]/g,'')");
+}
+//只能输入数字和英文
+function numberEnglishAllow(oop){
+    $(oop).attr("onkeyup","this.value=this.value.replace(/[^\\d|chun]/g,'');");
+    $(oop).attr("onbeforepaste","this.value=this.value.replace(/[^\\d|chun]/g,'')");
+}
+//只能输入字母和中文
+function lefferChineseAllow(oop){
+    $(oop).attr("onkeyup","this.value=this.value.replace(/[\\d]/g,'');");
+    $(oop).attr("onbeforepaste","this.value=this.value.replace(/[\\d]/g,'')");
+}
+//只能输入字母和数字
+function lefferNumberAllow(oop){
+    $(oop).attr("onkeyup","this.value=this.value.replace(/[^\\w\\.\]/ig,'');");
+    $(oop).attr("onbeforepaste","this.value=this.value.replace(/[^\\w\\.\]/ig,'')");
+}
+//只能输入字母和数字
+function phoneAllow(oop){
+    $(oop).attr("type","number");
+    $(oop).attr("onkeyup","this.value=this.value.replace(/\\D/g,'');");
+    $(oop).attr("onbeforepaste","this.value=this.value.replace(/\\D/g,'')");
+}
+//可以输入制定符号
+function markAllow(oop){
+    $(oop).attr("onkeyup","this.value=this.value.replace(/[^\\w=_-]|/ig,'');");
+    $(oop).attr("onbeforepaste","this.value=this.value.replace(/[^\\w=_-]|/ig,'')");
+}
+//控制文本框只能输入中文、英文、数字、小数点
+function markban(oop){
+    $(oop).attr("onkeyup","this.value=this.value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5\.]/g,'');");
+    $(oop).attr("onbeforepaste","this.value=this.value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5\.]/g,'')");
+}
+
+</script>
